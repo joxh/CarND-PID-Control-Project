@@ -43,7 +43,7 @@ int main()
   
 
 
-  bool there_is_a_json_init_file = true; // The build time flag for whether to use json
+  bool there_is_a_json_init_file = false; // The build time flag for whether to use json
   bool use_json_init_file;
   json json_init; //This package is used in main, so I think it's okay
   if (there_is_a_json_init_file){
@@ -69,13 +69,13 @@ int main()
     fixed_throttle = json_init["fixed_throttle"];
     
   } else {
-    Kp = 3.0;
-    Ki = 0.5;
-    Kd = 10.0;
-    Kp_speed = 3.0;
-    Ki_speed = 0.5;
-    Kd_speed = 10.0;
-    target_speed = 11.0;
+    Kp = 0.18;
+    Ki = 8.0e-6;
+    Kd = 3.00;
+    Kp_speed = 0.01;
+    Ki_speed = 6.0e-6;
+    Kd_speed = 0.00;
+    target_speed = 40.0;
     fixed_throttle = .3;
   }
 
@@ -106,7 +106,7 @@ int main()
           * another PID controller to control the speed!
           */
           double target_speed_to_use;
-          bool live_json = true;
+          bool live_json = false;
           if (live_json){
             ifstream json_init_file("params/init.json");
             json json_init;
@@ -135,10 +135,10 @@ int main()
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           pid_speed.UpdateError(speed-target_speed_to_use);
-          std::cout << "speed = " << speed << std::endl;
+
           double throttle_value ;
           throttle_value= - pid_speed.Kp * pid_speed.p_error - pid_speed.Ki * pid_speed.i_error - pid_speed.Kd * pid_speed.d_error;
-          std::cout << "dv = " << speed - target_speed << ", " << pid_speed.Kp * pid_speed.p_error << std::endl;
+
           throttle_value =  (throttle_value < -0.1) ? -0.1 : throttle_value;
           throttle_value =  throttle_value > 1.0 ? 1.0 : throttle_value;
           
