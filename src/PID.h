@@ -18,6 +18,11 @@ public:
   double Kd;
 
   /*
+  * Flags
+  */
+  bool has_a_data_point;
+
+  /*
   * Constructor
   */
   PID();
